@@ -1,0 +1,13 @@
+services:
+  db:
+    image: postgres:17-alpine
+    container_name: music_together_pg
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: music_together
+      POSTGRES_PASSWORD: music_together
+      POSTGRES_DB: music_together
+    restart: always
+    volumes:
+      - /data/postgres/music_together:/var/lib/postgresql/data
