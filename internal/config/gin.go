@@ -9,7 +9,7 @@ import (
 
 var ginEngine *gin.Engine
 
-func init() {
+func InitGinEngine() {
 	gin.SetMode(viper.GetString(GinMode))
 	ginEngine = gin.New()
 	ginEngine.Use(GinLogger())
@@ -25,4 +25,8 @@ func GinLogger() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 	}
+}
+
+func GetGin() *gin.Engine {
+	return ginEngine
 }

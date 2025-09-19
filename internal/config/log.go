@@ -22,7 +22,7 @@ var log = &MusicTogetherLogger{
 	logger: logursLogger.New(),
 }
 
-func init() {
+func InitLogger() {
 	output := io.MultiWriter(os.Stdout, &lumberjack.Logger{
 		Filename:   viper.GetString(LogFileName),
 		MaxSize:    viper.GetInt(LogFileMaxSizeMB),
@@ -31,10 +31,40 @@ func init() {
 		LocalTime:  true,
 		Compress:   viper.GetBool(LogCompress),
 	})
+	log.logger.SetReportCaller(true)
+	log.logger.SetFormatter(&logursLogger.TextFormatter{})
+	log.logger.SetLevel(getLevel(viper.GetString(LogLevel)))
 	log.logger.SetOutput(output)
-	log.logger.SetFormatter(&logursLogger.TextFormatter{
-		FullTimestamp: true,
-	})
+}
+
+type Level string
+
+const (
+	Fatal = "fatal"
+	Error = "error"
+	Warn  = "warn"
+	Info  = "info"
+	Debug = "debug"
+	Trace = "trace"
+)
+
+func getLevel(level string) logursLogger.Level {
+	switch level {
+	case Fatal:
+		return logursLogger.FatalLevel
+	case Error:
+		return logursLogger.ErrorLevel
+	case Warn:
+		return logursLogger.WarnLevel
+	case Info:
+		return logursLogger.InfoLevel
+	case Debug:
+		return logursLogger.DebugLevel
+	case Trace:
+		return logursLogger.TraceLevel
+	default:
+		return logursLogger.InfoLevel
+	}
 }
 
 func (logger *MusicTogetherLogger) LogMode(gormLogger.LogLevel) gormLogger.Interface {
@@ -73,7 +103,7 @@ func (logger *MusicTogetherLogger) Trace(ctx context.Context, begin time.Time, f
 		fields[logursLogger.ErrorKey] = err
 
 	}
-	logger.logger.WithContext(ctx).WithFields(fields).Errorf("%s [%s]", sql, elapsed)
+	logger.logger.WithContext(ctx).WithFields(fields).Tracef("%s [%s]", sql, elapsed)
 }
 
 func Log() *MusicTogetherLogger {

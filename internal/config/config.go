@@ -10,6 +10,7 @@ const (
 	LogFileMaxSizeMB  = "log.fileMaxSizeMB"
 	LogFileMaxBackups = "log.fileMaxBackups"
 	LogFileMaxAgeDays = "log.fileMaxAgeDays"
+	LogLevel          = "log.level"
 	LogCompress       = "log.compress"
 
 	GinMode     = "gin.mode"
